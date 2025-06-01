@@ -2,7 +2,7 @@ import React from 'react'
 import './JobColumns.css';
 import JobItem from './JobItem';
 
-export const JobColumns = ({jobs, setJobs, title, image, alt, statusName, search, setSearch}) => {
+export const JobColumns = ({jobs, title, image, alt, statusName, search, updateJobStatus}) => {
 
 // Filter jobs: first filter by status, then by search query
   const filteredByStatus = jobs.filter(job => job.status === statusName);
@@ -13,24 +13,15 @@ export const JobColumns = ({jobs, setJobs, title, image, alt, statusName, search
     );
   });
   
-  // Update job status based on condition
-  const updateTicketStatus = (id) => {
-    setJobs(
-      jobs.map(job =>
-        job.id === id ?
-        { ...job, status: (job.status === "start" || job.status === "stopped") ? "in-progress" : job.status === "in-progress" ? "completed" : "in-progress" }
-          : job
-      )
-    );
-  };
-  
   return (
     <section>
-      <div className={`job-column status-${statusName.toLowerCase()}
+      <div className={`job-column status-${statusName.toLowerCase() === "in progress" ? "in-progress" 
+        : statusName.toLowerCase() === "completed" ? "completed" 
+        : "start"}
       }`}>
         <h2 className='heading-status'>{title}</h2>
         <img className="status-image" src={image} alt={alt} />
-        <p>Below are jobs that {statusName === "start" ? "need to be started." : `are ${statusName}:`}</p>
+        <p>Below are jobs that {statusName === "Need to Start" ? "need to be started:" : `are ${statusName}:`}</p>
       </div>
 
       <ul className='status-board'>
@@ -38,8 +29,8 @@ export const JobColumns = ({jobs, setJobs, title, image, alt, statusName, search
           <JobItem 
             key={job.id} 
             job={job} 
-            updateTicketStatus={updateTicketStatus} 
-            title={title}
+            updateJobStatus={updateJobStatus} 
+            status={title}
           />
         ))  
       }

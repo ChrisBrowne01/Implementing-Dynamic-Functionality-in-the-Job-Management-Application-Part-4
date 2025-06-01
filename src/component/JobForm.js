@@ -19,49 +19,6 @@ export const JobForm = ({addNewJob, newJob, setNewJob, search, setSearch, error,
     if (error) setError("");
   };
 
-  // Handles form submission to add job
-  //  const addNewJob = (title) => {};
-  /* const handleSubmit = (e) => {
-    e.preventDefault();
-
-    // Basic validation
-    if (!newJob.title.trim()) { setError("Job Title cannot be empty.");
-      return;
-    }
-    if (!newJob.task) {
-      setError("Please select a job category.");
-      return;
-    }
-    if (!newJob.status || newJob.status === "") {
-      setError("Please select a job status.");
-      return;
-    }
-
-     // Create new job with a unique ID
-    // Find the maximum existing ID or start from 0 if no jobs exist
-    const maxId = jobs.length > 0 ? Math.max(...jobs.map(job => job.id)) : 0;
-    const newId = maxId + 1;
-
-    const newJobListing = {
-      id: newId,
-      title: newJob.title.trim(),
-      status: newJob.status.trim(),
-      task: newJob.task.trim()
-    };
-        
-    // Update the 'jobs' state by adding the new job listing
-    setJobs([...jobs, newJobListing]);
-    
-    // Clear the form fields after successful submission
-    setNewJob({id: '', title: '',  status: '', task: ''});
-    setError("");
-
-    // Log the data here, after the state has been updated
-    console.log("Submitting Job:", newJobListing); 
-    console.log("All Jobs:", [...jobs, newJobListing]); 
-  }; */
-
-
   return (
     <div className="form-header">
       <form onSubmit={addNewJob}>
@@ -103,10 +60,10 @@ export const JobForm = ({addNewJob, newJob, setNewJob, search, setSearch, error,
           value={newJob.status} 
           onChange={handleInputChange}> 
           <option value="">Select Status</option> {/* Default, non-submittable option */}
-          <option value="start">Start Process</option>
-          <option value="in-progress">Running</option>
-          <option value="completed">Completed</option>
-          <option value="stopped">Stopped</option>
+          <option value="Need to Start">Start Process</option>
+          <option value="In Progress">In Progress</option>
+          <option value="Completed">Completed</option>
+          <option value="Stopped">Stopped</option>
         </select>
 
         {/* A submit button to add the job */}

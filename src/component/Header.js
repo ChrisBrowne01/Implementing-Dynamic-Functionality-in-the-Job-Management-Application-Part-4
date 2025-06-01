@@ -10,7 +10,6 @@ export const Header = ({addNewJob, newJob, setNewJob, search, setSearch, error, 
         <img className="object-fit-contain" height="100" weight="auto" src={Logo} alt="Job Board Application" />
         <a href="/">Job Management Application Form</a>
       </h1>
-      {/* Add new job functionality */}
       <JobForm 
         addNewJob={addNewJob}
         newJob={newJob}

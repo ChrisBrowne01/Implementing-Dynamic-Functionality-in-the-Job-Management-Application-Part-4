@@ -55,7 +55,17 @@ function App() {
   const deleteJob = (id) => {};
 
   // Implement status update functionality
-  const updateJobStatus = (id, newStatus) => {};
+  // const updateJobStatus = (id, newStatus) => {};
+    // Update job status based on condition
+  const updateJobStatus = (id) => {
+    setJobs(
+      jobs.map(job =>
+        job.id === id ?
+        { ...job, status: (job.status === "Need to Start" || job.status === "stopped") ? "In Progress" : job.status === "In Progress" ? "Completed" : "In Progress" }
+          : job
+      )
+    );
+  };
 
   // Implement add new job functionality
   // const addNewJob = (title) => {};
@@ -106,7 +116,6 @@ function App() {
           {darkMode ? 'Light Mode ☀️' : 'Dark Mode 🌙'}
         </button>
         
-        {/* Add new job functionality */}
         <Header 
           addNewJob={addNewJob}
           newJob={newJob}
@@ -125,9 +134,10 @@ function App() {
             alt="To-do icon"
             jobs={jobs}
             setJobs={setJobs} 
-            statusName="start" 
+            statusName="Need to Start" 
             search={search}
             setSearch={setSearch}
+            updateJobStatus={updateJobStatus}
           />
 
           <JobColumns 
@@ -136,9 +146,10 @@ function App() {
             alt="In-progress icon"
             jobs={jobs}
             setJobs={setJobs}
-            statusName="in-progress"
+            statusName="In Progress"
             search={search}
             setSearch={setSearch} 
+            updateJobStatus={updateJobStatus}
           />
 
           <JobColumns 
@@ -147,9 +158,10 @@ function App() {
             alt="Done icon"
             jobs={jobs}
             setJobs={setJobs}
-            statusName="completed" 
+            statusName="Completed" 
             search={search}
             setSearch={setSearch}
+            updateJobStatus={updateJobStatus}
           />
 
         </main>
