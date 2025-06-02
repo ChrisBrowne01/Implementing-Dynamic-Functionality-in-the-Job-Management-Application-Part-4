@@ -74,7 +74,7 @@ export const JobForm = ({addNewJob, newJob, setNewJob, search, setSearch, error,
       </form>
       <form className="filter-input">
         <input
-          placeholder="Job Filter"
+          placeholder="Search by Job"
           onChange={(e) => setSearch(e.target.value)}
           value={search}
         />

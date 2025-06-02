@@ -1,7 +1,8 @@
 import React from 'react';
-import './JobItem.css';
+import deleteIcon from '../images/delete.png'
+import './JobStatus.css';
 
-const JobItem = ({job, updateJobStatus, status}) => {
+export const JobStatus = ({job, updateJobStatus, status, deleteJob}) => {
   return (
       <div className={`ticket-item status-${job.status.toLowerCase() === "in progress" ? "in-progress" 
         : job.status.toLowerCase() === "completed" ? "completed" 
@@ -11,18 +12,21 @@ const JobItem = ({job, updateJobStatus, status}) => {
           <h5 className="card-title">
             {job.title}
           </h5>
-          <p className="card-task">{job.task}</p>
-          <p className="card-status">{status}</p>
+          {/* No need to display task or status */}
+          {/* <p className="card-task">{job.task}</p> */}
+          {/* <p className="card-status">{status}</p> */}
         </div>
         <div className="card-footer">
           <div className="button-group">
+            {/* Change or add Delete button icon */}
             <button onClick={() => updateJobStatus(job.id)} className="job-action-button" >
               {job.status === "Need to Start" ? "Start Job" : job.status === "In Progress" ? "Complete Job" : "Mark as Incomplete"}
             </button>
+            <div className='jobDelete' onClick={() => deleteJob(job.id)}>
+              <img src={deleteIcon} className='deletingImg' alt="Delete" />
+            </div>
           </div>
         </div>
       </div>
   )
 }
-
-export default JobItem

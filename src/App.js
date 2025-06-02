@@ -1,31 +1,31 @@
 import React, { useState, useEffect } from "react";
 import { Header } from "./component/Header";
 import { Footer } from './component/Footer';
-import { JobColumns } from "./component/JobColumns";
+import { JobColumn } from "./component/JobColumn";
 import toDoIcon from './images/to-do-icon.jpg';
 import inProgressIcon from './images/in-progress-icon.png';
 import doneIcon from './images/done-icon.png';
 import './App.css';
 
 function App() {
-  /** 
-   * change setJobValuess to setJobs, checked!!!
-   * change name to title, checked!!!
-   * status is: 'start' => 'Need to Start'
-   *            'in-progress' => 'In Progress'
-   *            'completed' => 'Completed',
-   * take out task, works still but add task to new objects */
+  /**
+   * Bonus Challenges:
+   * 1.Implement drag-and-drop functionality to move jobs between columns. [TO DO]
+   * 2.Add a search feature to filter jobs by title. [DONE]
+   * 3.Implement local storage to persist the job list between page reloads. [TO DO]
+   * */
   // Initialize job list objects
-  const [jobs, setJobs] = useState([
+  const [jobs, setJobs] = useState(() => {
+    const savedJobs = localStorage.getItem('jobs');
+    return savedJobs ? JSON.parse(savedJobs) : [
     { id: 1, title: 'Parse Emails', status: 'Need to Start' },
     { id: 2, title: 'SAP Extraction', status: 'In Progress' },
     { id: 3, title: 'Generate Report', status: 'Completed' }
-  ]);
-  /* const [jobs, setJobValues] = useState([
-    { id: 1, name: 'Email Extractor', status: 'in-progress', task: 'Read Email'},
-    { id: 2, name: 'Data Analyzer', status: 'completed', task: 'Web Parsing'},
-    { id: 3, name: 'Report Generator', status: 'start', task: 'Writing Email'}
-  ]); */
+  ]});
+
+  useEffect(() => {
+    localStorage.setItem('jobs', JSON.stringify(jobs));
+  }, [jobs]);
 
   const [search, setSearch] = useState("");
   const [newJob, setNewJob] = useState({id: '', title: '', status: '', task: ''})
@@ -36,6 +36,7 @@ function App() {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode === 'true' ? true : false;
   });
+  
   // Effect to apply/remove the 'dark-mode' class on the body
   useEffect(() => {
     if (darkMode) {
@@ -46,17 +47,16 @@ function App() {
     // Save preference to localStorage
     localStorage.setItem('darkMode', darkMode);
   }, [darkMode]);
+
   // Function to toggle dark mode
   const toggleDarkMode = () => {
     setDarkMode(theme => !theme);
   };
 
-  // Implement delete functionality
-  const deleteJob = (id) => {};
+  // Delete job based on ID
+  const deleteJob = (id) => {setJobs(jobs.filter((job) => job.id !== id))};
 
-  // Implement status update functionality
-  // const updateJobStatus = (id, newStatus) => {};
-    // Update job status based on condition
+  // Update job status based on condition
   const updateJobStatus = (id) => {
     setJobs(
       jobs.map(job =>
@@ -128,7 +128,7 @@ function App() {
         <main className="job-columns">
           
           {/* update state & delete functionality */}
-          <JobColumns
+          <JobColumn
             title="Need to Start" 
             image={toDoIcon} 
             alt="To-do icon"
@@ -138,9 +138,10 @@ function App() {
             search={search}
             setSearch={setSearch}
             updateJobStatus={updateJobStatus}
+            deleteJob={deleteJob}
           />
 
-          <JobColumns 
+          <JobColumn 
             title="In Progress" 
             image={inProgressIcon} 
             alt="In-progress icon"
@@ -150,9 +151,10 @@ function App() {
             search={search}
             setSearch={setSearch} 
             updateJobStatus={updateJobStatus}
+            deleteJob={deleteJob}
           />
 
-          <JobColumns 
+          <JobColumn 
             title="Completed" 
             image={doneIcon} 
             alt="Done icon"
@@ -162,6 +164,7 @@ function App() {
             search={search}
             setSearch={setSearch}
             updateJobStatus={updateJobStatus}
+            deleteJob={deleteJob}
           />
 
         </main>
