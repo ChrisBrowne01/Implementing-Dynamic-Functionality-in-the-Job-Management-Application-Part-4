@@ -1,4 +1,5 @@
 import React from 'react'
+import { Droppable } from 'react-beautiful-dnd';
 import { JobStatus } from './JobStatus';
 import './JobColumn.css';
 
@@ -24,19 +25,25 @@ export const JobColumn = ({ jobs, title, image, alt, statusName, search, updateJ
         <p>Below are jobs that {statusName === "Need to Start" ? "need to be started:" : `are ${statusName}:`}</p>
       </div>
 
-        {/* List the job under each status */}
-      <ul className='status-board'>
-        {filteredJobs.map((job) => (
-          <JobStatus
-            key={job.id}
-            job={job}
-            updateJobStatus={updateJobStatus}
-            status={title}
-            deleteJob={deleteJob}
-          />
-        ))
-        }
-      </ul>
+      {/* List the job under each status */}
+      <Droppable droppableId={title}> {/* Use the column title as the droppableId */}
+        {(provided) => (
+        <ul className='status-board' {...provided.droppableProps} ref={provided.innerRef}>
+          {filteredJobs.map((job, index) => (
+            <JobStatus 
+              key={job.id}
+              job={job}
+              updateJobStatus={updateJobStatus}
+              status={title}
+              deleteJob={deleteJob}
+              index={index} // Pass index for Draggable
+            />
+          ))
+          }
+          {provided.placeholder} {/* for drag-and-drop visual */}
+        </ul>
+        )}
+       </Droppable>
     </section>
   )
 }

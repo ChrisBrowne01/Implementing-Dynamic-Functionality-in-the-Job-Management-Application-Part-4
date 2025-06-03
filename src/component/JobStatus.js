@@ -1,13 +1,19 @@
 import React from 'react';
 import deleteIcon from '../images/delete.png'
+import { Draggable } from 'react-beautiful-dnd'; // Import Draggable
 import './JobStatus.css';
 
-export const JobStatus = ({job, updateJobStatus, status, deleteJob}) => {
+export const JobStatus = ({job, updateJobStatus, status, deleteJob, index}) => {
   return (
-      <div className={`ticket-item status-${job.status.toLowerCase() === "in progress" ? "in-progress" 
-        : job.status.toLowerCase() === "completed" ? "completed" 
-        : "start"
-      }`} >
+    <Draggable draggableId={job.id.toString()} index={index}> {/* Use job.id as draggableId */}
+      {(provided) => (
+        <div className={`ticket-item status-${job.status.toLowerCase() === "in progress" ? "in-progress" 
+          : job.status.toLowerCase() === "completed" ? "completed" 
+          : "start"}`} 
+          ref={provided.innerRef}
+          {...provided.draggableProps}
+          {...provided.dragHandleProps} // Apply drag handle props here
+        >
         <div className="card-body">
           <h5 className="card-title">
             {job.title}
@@ -28,5 +34,7 @@ export const JobStatus = ({job, updateJobStatus, status, deleteJob}) => {
           </div>
         </div>
       </div>
+      )}
+    </Draggable>
   )
 }
