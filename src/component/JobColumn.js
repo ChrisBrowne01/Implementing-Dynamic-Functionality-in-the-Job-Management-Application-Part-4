@@ -1,9 +1,9 @@
 import React from 'react'
-import { Droppable } from 'react-beautiful-dnd';
+import { Droppable, Draggable } from '@hello-pangea/dnd';
 import { JobStatus } from './JobStatus';
 import './JobColumn.css';
 
-export const JobColumn = ({ jobs, title, image, alt, statusName, search, updateJobStatus, deleteJob}) => {
+export const JobColumn = ({ jobs, title, image, alt, statusName, search, updateJobStatus, deleteJob, droppableId }) => {
 
   // Filter jobs: first filter by status, then by search query
   const filteredByStatus = jobs.filter(job => job.status === statusName);
@@ -26,21 +26,34 @@ export const JobColumn = ({ jobs, title, image, alt, statusName, search, updateJ
       </div>
 
       {/* List the job under each status */}
-      <Droppable droppableId={title}> {/* Use the column title as the droppableId */}
+       <Droppable droppableId={droppableId}>
         {(provided) => (
-        <ul className='status-board' {...provided.droppableProps} ref={provided.innerRef}>
-          {filteredJobs.map((job, index) => (
-            <JobStatus 
-              key={job.id}
-              job={job}
-              updateJobStatus={updateJobStatus}
-              status={title}
-              deleteJob={deleteJob}
-              index={index} // Pass index for Draggable
-            />
-          ))
-          }
-          {provided.placeholder} {/* for drag-and-drop visual */}
+          <ul
+            className='status-board'
+            {...provided.droppableProps}
+            ref={provided.innerRef}
+          >
+            {filteredJobs.map((job, index) => (
+              <Draggable key={job.id} draggableId={job.id.toString()} index={index}>
+                {(provided) => (
+                  <li
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className="draggable-item" // Add a class for potential styling
+                  >
+                    <JobStatus 
+                      key={job.id}
+                      job={job}
+                      updateJobStatus={updateJobStatus}
+                      status={title}
+                      deleteJob={deleteJob}
+                    />
+                  </li>
+                )};
+              </Draggable>
+          ))}
+          {provided.placeholder} 
         </ul>
         )}
        </Droppable>

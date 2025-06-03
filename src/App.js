@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { DragDropContext } from 'react-beautiful-dnd';
+import { DragDropContext } from '@hello-pangea/dnd';
 import { Header } from "./component/Header";
 import { Footer } from './component/Footer';
 import { JobColumn } from "./component/JobColumn";
@@ -13,10 +13,9 @@ function App() {
    * Bonus Challenges:
    * 1.Implement drag-and-drop functionality to move jobs between columns. [TO DO]
    * 2.Add a search feature to filter jobs by title. [DONE]
-   * 3.Implement local storage to persist the job list between page reloads. [DONE]
+   * 3.Implement local storage to persist the job list between page reloads. [TO DO]
    * */
   // Initialize job list objects
-  // Implement local storage to persist the job list between page reloads
   const [jobs, setJobs] = useState(() => {
     const savedJobs = localStorage.getItem('jobs');
     return savedJobs ? JSON.parse(savedJobs) : [
@@ -25,13 +24,12 @@ function App() {
     { id: 3, title: 'Generate Report', status: 'Completed' }
   ]});
 
-  // useEffect hook to save the jobs array to localStorage whenever it changes
   useEffect(() => {
     localStorage.setItem('jobs', JSON.stringify(jobs));
   }, [jobs]);
 
-  const [newJob, setNewJob] = useState({id: '', title: '', status: '', task: ''})
   const [search, setSearch] = useState("");
+  const [newJob, setNewJob] = useState({id: '', title: '', status: '', task: ''})
   const [error, setError] = useState("")
 
   // Initialize dark mode from localStorage or default to false
@@ -39,7 +37,7 @@ function App() {
     const savedMode = localStorage.getItem('darkMode');
     return savedMode === 'true' ? true : false;
   });
-
+  
   // Effect to apply/remove the 'dark-mode' class on the body
   useEffect(() => {
     if (darkMode) {
@@ -111,40 +109,56 @@ function App() {
     console.log("Submitting Job:", newJobListing); 
     console.log("All Jobs:", [...jobs, newJobListing]); 
   };
+const onDragEnd = (result) => {
+    const { source, destination, draggableId } = result;
 
-  const onDragEnd = (result) => {
-    const { destination, source, draggableId } = result;
-
-    // If dropped outside a droppable area or in the same place
-    if (!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) {
+    // Dropped outside the list
+    if (!destination) {
       return;
     }
 
-    setJobs(prevJobs => {
-      const newJobs = Array.from(prevJobs);
-      const movedJobIndex = newJob.findIndex(job => job.id === parseInt(draggableId));
-      const [movedJob] = newJobs.splice(movedJobIndex, 1);
+    // If the item is dropped in the same column and same position, do nothing
+    if (source.droppableId === destination.droppableId && source.index === destination.index) {
+      return;
+    }
 
-      // Update the status of the moved job based on the new column
-      let newStatus = '';
-      if (destination.droppableId === "Need to Start") {
-        newStatus = "Need to Start";
-      } else if (destination.droppableId === "In Progress") {
-        newStatus = "In Progress";
-      } else if (destination.droppableId === "Completed") {
-        newStatus = "Completed";
-      }
+    const draggedJob = jobs.find(job => job.id === parseInt(draggableId));
 
-      movedJob.status = newStatus;
-      newJobs.push(movedJob);
+    if (!draggedJob) {
+      return;
+    }
 
-      // Sort the jobs by their ID to ensure consistent order after a drag-and-drop
-      newJobs.sort((a, b) => a.id - b.id);
+    // Create a new array of jobs to avoid direct mutation
+    const newJobs = Array.from(jobs);
 
-      return newJobs;
+    // Remove the dragged job from its original position
+    newJobs.splice(newJobs.findIndex(job => job.id === draggedJob.id), 1);
 
-    });
+    // Update the status of the dragged job based on the destination column
+    let newStatus;
+    if (destination.droppableId === "Need to Start") {
+      newStatus = "Need to Start";
+    } else if (destination.droppableId === "In Progress") {
+      newStatus = "In Progress";
+    } else if (destination.droppableId === "Completed") {
+      newStatus = "Completed";
+    } else if (destination.droppableId === "Stopped") { // If you want to allow dropping into "Stopped"
+      newStatus = "Stopped";
+    }
+
+
+    const updatedDraggedJob = { ...draggedJob, status: newStatus };
+
+    // Insert the dragged job into its new position in the destination column
+    // For simplicity, we are just changing the status and re-filtering in JobColumn.
+    // If you wanted to maintain order within columns, you'd insert at destination.index
+    // after filtering, and then combine the arrays. For this setup, simply update status.
+    newJobs.push(updatedDraggedJob);
+
+    setJobs(newJobs);
   };
+
+
 
   return (
     <DragDropContext onDragEnd={onDragEnd}>
@@ -165,6 +179,7 @@ function App() {
         />
         <main className="job-columns">
           
+          {/* update state & delete functionality */}
           <JobColumn
             title="Need to Start" 
             image={toDoIcon} 
@@ -176,6 +191,7 @@ function App() {
             setSearch={setSearch}
             updateJobStatus={updateJobStatus}
             deleteJob={deleteJob}
+            droppableId="Need to Start"
           />
 
           <JobColumn 
@@ -189,6 +205,7 @@ function App() {
             setSearch={setSearch} 
             updateJobStatus={updateJobStatus}
             deleteJob={deleteJob}
+            droppableId="In Progress"
           />
 
           <JobColumn 
@@ -202,6 +219,7 @@ function App() {
             setSearch={setSearch}
             updateJobStatus={updateJobStatus}
             deleteJob={deleteJob}
+            droppableId="Completed"
           />
 
         </main>
