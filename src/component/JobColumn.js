@@ -36,7 +36,7 @@ export const JobColumn = ({ jobs, title, image, alt, statusName, search, updateJ
             {filteredJobs.map((job, index) => (
               <Draggable key={job.id} draggableId={job.id.toString()} index={index}>
                 {(provided) => (
-                  <li
+                  <div
                     ref={provided.innerRef}
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
@@ -49,8 +49,8 @@ export const JobColumn = ({ jobs, title, image, alt, statusName, search, updateJ
                       status={title}
                       deleteJob={deleteJob}
                     />
-                  </li>
-                )};
+                  </div>
+                )}
               </Draggable>
           ))}
           {provided.placeholder} 

@@ -57,19 +57,32 @@
 }
 
 /* Style the status differently based on its value  */
-.status-running {
-  border: 2px solid lightsalmon;
-  color: lightsalmon;
+.ticket-item.status-start {
+  border: 2px solid #d58080;
+  color: darkred;
 }
 
-.status-completed {
+.ticket-item.status-start {
+  border: 1px solid #d58080;
+}
+
+.ticket-item.status-completed {
   border: 2px solid lightgreen;
   color: green;
 }
 
-.status-stopped {
-  border: 2px solid #343434;
-  color: #343434;
+.ticket-item.status-completed {
+  border: 1px solid lightgreen;
+}
+
+.ticket-item.status-in-progress {
+  border: 2px solid #f9dc85;
+  /* color: #343434; */
+}
+
+body.dark-mode .ticket-item.status-in-progress {
+  border: 1px solid #f9dc85;
+  /* color: #343434; */
 }
 
 /* Style for the failed status  */
@@ -78,10 +91,10 @@
   color: #721c24;
   border: 1px solid #f5c6cb;
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   margin: auto;
   text-align: center;
-  width: 90%;
+  width: 100%;
 }
 
 /* Style for the completed status  */
@@ -90,10 +103,10 @@
   color: #155724;
   border: 1px solid #c3e6cb;
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   margin: auto;
   text-align: center;
-  width: 90%;
+  width: 100%;
 }
 
 /* Style for the in-progress status  */
@@ -102,10 +115,10 @@
   color: #856404;
   border: 1px solid #ffeeba;
   border-radius: 5px;
-  padding: 20px;
+  padding: 10px;
   margin: auto;
   text-align: center;
-  width: 90%;
+  width: 100%;
 }
 
 .ticket-info {
@@ -136,6 +149,14 @@
   border-radius: 25px;
 }
 
+.card-footer {
+  min-width: 50%;
+}
+
+.button-group {
+  display: flex;
+  justify-content: space-between;
+}
 .job-action-button {
   background-color: var(--submit-bg-light); 
   color: white; 
